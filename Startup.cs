@@ -1,3 +1,4 @@
+using Blazored.Toast;
 using BlzorEmpleados.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace BlzorEmpleados
@@ -27,8 +29,18 @@ namespace BlzorEmpleados
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddBlazoredToast();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+
+            HttpClientHandler httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback =
+                (message, cert, chain, errors) => true;
+
+            services.AddSingleton(new HttpClient(httpClientHandler)
+            {
+                BaseAddress = new Uri("https://blazorapiempleados20210304002941.azurewebsites.net/")
+            }); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
